@@ -79,3 +79,5 @@ class NamedPipe {
 
   explicit operator bool() const;
 };
+
+in_addr_t string_to_in_addr_t(std::string address);

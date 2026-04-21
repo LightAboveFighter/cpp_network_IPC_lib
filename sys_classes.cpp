@@ -218,3 +218,12 @@ int NamedPipe::poll_s(short events, int timeout) {
 }
 
 NamedPipe::operator bool() const { return fd != -1; }
+
+in_addr_t string_to_in_addr_t(std::string address) {
+  in_addr_t ret;
+  if (inet_pton(AF_INET, address.c_str(), &ret) == 1) {
+    return ret;
+  } else {
+    return -1;
+  }
+}
