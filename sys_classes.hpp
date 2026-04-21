@@ -1,3 +1,4 @@
+#include <netinet/in.h>
 #include <poll.h>
 #include <sys/socket.h>
 #include <sys/types.h>
@@ -8,6 +9,7 @@
 
 class Socket {
   int fd = -1;
+  struct sockaddr_in sock_addr {};
 
  public:
   Socket(int domain, int type, int protocol);
@@ -25,9 +27,14 @@ class Socket {
 
   int get_f_descriptor() const;
 
-  void connect_s(const sockaddr* server_address) const;
+  int get_address_size() const;
 
-  void bind_s(sa_family_t sin_family, in_port_t sin_port, in_addr_t sin_addr) const;
+  int get_address_port() const;
+
+  void connect_s(sa_family_t sin_family, in_port_t sin_port,
+                 in_addr_t sin_addr);
+
+  void bind_s(sa_family_t sin_family, in_port_t sin_port, in_addr_t sin_addr);
 
   void writeAll(void* buffer, size_t n) const;
 

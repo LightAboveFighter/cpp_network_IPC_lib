@@ -19,6 +19,10 @@ Socket::Socket(int domain, int type, int protocol) {
 
 Socket::Socket(int socket_descriptor) {
   fd = socket_descriptor;
+
+  sock_addr.sin_family = -1;
+  sock_addr.sin_port = htons(-1);
+  sock_addr.sin_addr.s_addr = htonl(-1);
   if (fd < 0) throw std::system_error(errno, std::generic_category(), "socket");
 }
 
@@ -33,22 +37,28 @@ Socket& Socket::operator=(Socket&& other) noexcept {
 
 int Socket::get_f_descriptor() const { return fd; }
 
-void Socket::connect_s(const sockaddr* server_address) const {
-  if (server_address == nullptr ||
-      connect(fd, server_address, sizeof(*server_address)) < 0) {
+int Socket::get_address_size() const { return sizeof(sock_addr); }
+
+int Socket::get_address_port() const { return ntohl(sock_addr.sin_port); }
+
+void Socket::connect_s(sa_family_t sin_family, in_port_t sin_port,
+                       in_addr_t sin_addr) {
+  sock_addr.sin_family = sin_family;
+  sock_addr.sin_port = htons(sin_port);
+  sock_addr.sin_addr.s_addr = htonl(sin_addr);
+
+  if (connect(fd, (const sockaddr*)&sock_addr, get_address_size()) < 0) {
     throw std::system_error(errno, std::generic_category(), "connect");
   }
 }
 
 void Socket::bind_s(sa_family_t sin_family, in_port_t sin_port,
-                    in_addr_t sin_addr) const {
-  struct sockaddr_in address;
+                    in_addr_t sin_addr) {
+  sock_addr.sin_family = sin_family;
+  sock_addr.sin_port = htons(sin_port);
+  sock_addr.sin_addr.s_addr = htonl(sin_addr);
 
-  address.sin_family = sin_family;
-  address.sin_port = htons(sin_port);
-  address.sin_addr.s_addr = htonl(sin_addr);
-
-  if (bind(fd, (const sockaddr*)&address, sizeof(address)) < 0) {
+  if (bind(fd, (const sockaddr*)&sock_addr, get_address_size()) < 0) {
     throw std::system_error(errno, std::generic_category(), "bind");
   }
 }
