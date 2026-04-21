@@ -1,3 +1,6 @@
+#ifndef __SYS_CLASSES_HPP__
+#define __SYS_CLASSES_HPP__
+
 #include <netinet/in.h>
 #include <poll.h>
 #include <sys/socket.h>
@@ -81,3 +84,5 @@ class NamedPipe {
 };
 
 in_addr_t string_to_in_addr_t(std::string address);
+
+#endif
