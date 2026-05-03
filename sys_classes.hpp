@@ -49,6 +49,8 @@ class Socket {
 
   int poll_s(short events, int timeout);
 
+  void set_socket_option(int option_name);
+
   Socket accept_s() const;
 
   explicit operator bool() const;

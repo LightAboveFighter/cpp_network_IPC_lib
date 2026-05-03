@@ -116,6 +116,11 @@ int Socket::poll_s(short events, int timeout) {
   return poll(&poll_struct, 1, timeout);
 }
 
+void Socket::set_socket_option(int option_name) {
+  int optval = 1;
+  setsockopt(fd, SOL_SOCKET, option_name, &optval, sizeof(optval));
+}
+
 Socket Socket::accept_s() const {
   struct sockaddr incoming_addr;
   socklen_t incoming_addr_len = sizeof(incoming_addr);
