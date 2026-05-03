@@ -116,9 +116,20 @@ int Socket::poll_s(short events, int timeout) {
   return poll(&poll_struct, 1, timeout);
 }
 
-void Socket::set_socket_option(int option_name) {
+void Socket::set_socket_option(int option) {
   int optval = 1;
-  setsockopt(fd, SOL_SOCKET, option_name, &optval, sizeof(optval));
+  if (setsockopt(fd, SOL_SOCKET, option, &optval, sizeof(optval)) < 0) {
+    throw std::system_error(errno, std::generic_category(), "setsockopt");
+  }
+}
+
+in_addr_t Socket::get_peer_addr() const {
+  struct sockaddr_in peer;
+  socklen_t len = sizeof(peer);
+  if (getpeername(fd, (struct sockaddr*)&peer, &len) == -1) {
+    throw std::system_error(errno, std::generic_category(), "getpeername");
+  }
+  return peer.sin_addr.s_addr;
 }
 
 Socket Socket::accept_s() const {

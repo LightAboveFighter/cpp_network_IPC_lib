@@ -51,6 +51,8 @@ class Socket {
 
   void set_socket_option(int option_name);
 
+  in_addr_t get_peer_addr() const;
+
   Socket accept_s() const;
 
   explicit operator bool() const;
