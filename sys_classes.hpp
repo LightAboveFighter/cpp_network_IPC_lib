@@ -49,7 +49,11 @@ class Socket {
 
   int poll_s(short events, int timeout);
 
-  void set_socket_option(int option_name);
+  template <typename T = int>
+  void set_socket_option(int option, const T& optval);
+
+  template <typename T = struct timeval>
+  void set_socket_option(int option, const T& optval);
 
   in_addr_t get_peer_addr() const;
 

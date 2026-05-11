@@ -116,8 +116,15 @@ int Socket::poll_s(short events, int timeout) {
   return poll(&poll_struct, 1, timeout);
 }
 
-void Socket::set_socket_option(int option) {
-  int optval = 1;
+template <typename T = int>
+void Socket::set_socket_option(int option, const T& optval) {
+  if (setsockopt(fd, SOL_SOCKET, option, &optval, sizeof(optval)) < 0) {
+    throw std::system_error(errno, std::generic_category(), "setsockopt");
+  }
+}
+
+template <typename T = struct timeval>
+void Socket::set_socket_option(int option, const T& optval) {
   if (setsockopt(fd, SOL_SOCKET, option, &optval, sizeof(optval)) < 0) {
     throw std::system_error(errno, std::generic_category(), "setsockopt");
   }
