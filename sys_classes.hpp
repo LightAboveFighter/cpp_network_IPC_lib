@@ -41,7 +41,7 @@ class Socket {
 
   void writeAll(void* buffer, size_t n) const;
 
-  void readAll(void* buffer, size_t n) const;
+  int readAll(void* buffer, size_t n) const;
 
   int read_s(void* buffer, size_t n) const;
 
