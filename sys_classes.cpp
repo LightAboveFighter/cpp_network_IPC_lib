@@ -17,8 +17,9 @@ Socket::Socket(int domain, int type, int protocol) {
   if (fd < 0) throw std::system_error(errno, std::generic_category(), "socket");
 }
 
+/*Duplicate socket descriptor via system call*/
 Socket::Socket(int socket_descriptor) {
-  fd = socket_descriptor;
+  fd = dup(socket_descriptor);
 
   sock_addr.sin_family = -1;
   sock_addr.sin_port = htons(-1);
